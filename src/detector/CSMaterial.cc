@@ -2,7 +2,7 @@
 // Created by herbertqiao on 7/5/16.
 //
 
-#include "detector/DSMaterial.hh"
+#include "detector/CSMaterial.hh"
 #include "detector/BambooMaterialFactory.hh"
 #include "BambooGlobalVariables.hh"
 #include "BambooUtils.hh"
@@ -14,23 +14,23 @@
 namespace
 {
 
-    BambooMaterial *createDSMaterial()
+    BambooMaterial *createCSMaterial()
     {
-        return new DSMaterial("DSMaterial");
+        return new CSMaterial("CSMaterial");
     }
 
-    const std::string DSMaterialName("DSMaterial");
+    const std::string CSMaterialName("CSMaterial");
 
-    const bool registered = BambooMaterialFactory::Instance()->registerMaterial(DSMaterialName, createDSMaterial);
+    const bool registered = BambooMaterialFactory::Instance()->registerMaterial(CSMaterialName, createCSMaterial);
 }
 
-DSMaterial::DSMaterial(const G4String &name) :
+CSMaterial::CSMaterial(const G4String &name) :
         BambooMaterial(name)
 {
     G4cout << "DetectorStation Material Found." << G4endl;
 }
 
-void DSMaterial::defineMaterials()
+void CSMaterial::defineMaterials()
 {
     G4NistManager *pNistManager = G4NistManager::Instance();
     vector<G4Element *> elementVec;
@@ -89,7 +89,6 @@ void DSMaterial::defineMaterials()
     G4Isotope *Ge74 = new G4Isotope("Ge74", 32, 74, 74.0 * g / mole);
     G4Isotope *Ge76 = new G4Isotope("Ge76", 32, 76, 76.0 * g / mole);
 
-    double a = 75.71 * g / mole;
     G4int nIsotopes = 5;
     G4Element *elGeNat = new G4Element("naturalGermanium", "GeNat", nIsotopes);
     elGeNat->AddIsotope(Ge70, 20.9 * perCent);

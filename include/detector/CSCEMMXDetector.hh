@@ -7,10 +7,10 @@
 
 #include "detector/BambooDetectorPart.hh"
 
-class DSCEMMXDetector : public BambooDetectorPart
+class CSCEMMXDetector : public BambooDetectorPart
 {
 public:
-    DSCEMMXDetector(const G4String &name);
+    CSCEMMXDetector(const G4String &name);
 
     virtual G4bool construct();
 

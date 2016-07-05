@@ -7,10 +7,10 @@
 
 #include "detector/BambooDetectorPart.hh"
 
-class DSSampleBox : public BambooDetectorPart
+class CSSampleBox : public BambooDetectorPart
 {
 public:
-    DSSampleBox(const G4String &name);
+    CSSampleBox(const G4String &name);
 
     virtual G4bool construct();
 

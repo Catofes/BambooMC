@@ -13,40 +13,37 @@
 #include <G4Color.hh>
 #include <G4VisAttributes.hh>
 #include <analysis/PandaXSensitiveDetector.hh>
-#include "detector/DSCEMMXDetector.hh"
+#include "detector/CSCEMMXDetector.hh"
 
 namespace
 {
 
-    BambooDetectorPart *createDSCEMMXDetector(const G4String &name)
+    BambooDetectorPart *createCSCEMMXDetector(const G4String &name)
     {
-        return new DSCEMMXDetector(name);
+        return new CSCEMMXDetector(name);
     }
 
-    const std::string DSCEMMXDetectorName("DSCEMMXDetector");
+    const std::string CSCEMMXDetectorName("CSCEMMXDetector");
 
-    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(DSCEMMXDetectorName,
-                                                                                    createDSCEMMXDetector);
+    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(CSCEMMXDetectorName,
+                                                                                    createCSCEMMXDetector);
 }
 
-DSCEMMXDetector::DSCEMMXDetector(const G4String &name)
+CSCEMMXDetector::CSCEMMXDetector(const G4String &name)
         : BambooDetectorPart(name)
 {
     TopShieldOpen = false;
 }
 
-G4bool DSCEMMXDetector::construct()
+G4bool CSCEMMXDetector::construct()
 {
-    G4cout << " start constructing shield " << G4endl;
+    G4cout << "Counting Station CEMMX Detector Found." << G4endl;
 
     G4Material *Lead = G4Material::GetMaterial("Lead");
     G4Material *Copper = G4Material::GetMaterial("Copper");
     G4Material *Air = G4Material::GetMaterial("G4_AIR");
     G4Material *natGe = G4Material::GetMaterial("NaturalGe");
-    G4Material *Aluminium = G4Material::GetMaterial("G4_Al");
-    G4Material *Polyethylene = G4Material::GetMaterial("Polyethylene");
     G4Material *Vacuum = G4Material::GetMaterial("Vacuum");
-    G4Material *Epoxy = G4Material::GetMaterial("Epoxy");
     G4Material *CarbonFibre = G4Material::GetMaterial("CarbonFibre");
 
     G4double pRMin;
@@ -82,11 +79,8 @@ G4bool DSCEMMXDetector::construct()
                                       dHalfZ);
     G4LogicalVolume *m_pLeadShieldLogicalVolume = new G4LogicalVolume(pLeadShieldBox, Lead,
                                                                       "LeadShieldLogicalVolume", 0, 0, 0);
-    G4VPhysicalVolume *m_pLeadShieldPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
-                                                                       m_pLeadShieldLogicalVolume,
-                                                                       "LeadShield",
-                                                                       _parentPart->getContainerLogicalVolume(), false,
-                                                                       0);
+    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), m_pLeadShieldLogicalVolume, "LeadShield",
+                      _parentPart->getContainerLogicalVolume(), false, 0);
 
 //--- copper shield shell s 40 * 40 * 70cm, top and surrounding shield 10cm thick, bottom 25cm thick---
 // if open, increase height from 70 to 90cm
@@ -101,9 +95,8 @@ G4bool DSCEMMXDetector::construct()
                                         dHalfZ);
     G4LogicalVolume *m_pCopperShieldLogicalVolume = new G4LogicalVolume(pCopperShieldBox, Copper,
                                                                         "CopperShieldLogicalVolume", 0, 0, 0);
-    G4VPhysicalVolume *m_pCopperShieldPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
-                                                                         m_pCopperShieldLogicalVolume, "CopperShield",
-                                                                         m_pLeadShieldLogicalVolume, false, 0);
+    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), m_pCopperShieldLogicalVolume, "CopperShield",
+                      m_pLeadShieldLogicalVolume, false, 0);
 
 //--- counting chamber 20cm * 20cm * 35cm---
 // if open, increase height to 55cm
@@ -124,10 +117,8 @@ G4bool DSCEMMXDetector::construct()
                                    dHalfZ);
     G4LogicalVolume *m_pChamberLogicalVolume = new G4LogicalVolume(pChamberBox, Air,
                                                                    "ChamberLogicalVolume", 0, 0, 0);
-    G4VPhysicalVolume *m_pChamberPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0., 0., dZShift),
-                                                                    m_pChamberLogicalVolume, "Chamber",
-                                                                    m_pCopperShieldLogicalVolume,
-                                                                    false, 0);
+    _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0., 0., dZShift), m_pChamberLogicalVolume, "Chamber",
+                                            m_pCopperShieldLogicalVolume, false, 0);
     _partContainerLogicalVolume = m_pChamberLogicalVolume;
 //--- cryostat shell made of carbon fiber is a cylinder 108mm in diameter and 230mm high---
 //   the distance from the top surface to the top of counting chamber is 350-230mm = 120mm
@@ -142,14 +133,11 @@ G4bool DSCEMMXDetector::construct()
     pDPhi = 360.0 * deg;
     if (TopShieldOpen) { dZShift = -160.0 * mm; }
     else { dZShift = -60.0 * mm; }
-
     G4Tubs *pCryostatOuterTubs = new G4Tubs("CryostatOuterTubs", pRMin, pRMax, pDz, pSPhi, pDPhi);
     G4LogicalVolume *m_pCryostatLogicalVolume = new G4LogicalVolume(pCryostatOuterTubs, CarbonFibre,
                                                                     "CryostatLogicalVolume", 0, 0, 0);
-    G4VPhysicalVolume *m_pCryostatPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(-40.0 * mm, 0., dZShift),
-                                                                     m_pCryostatLogicalVolume, "Cryostat",
-                                                                     m_pChamberLogicalVolume, false,
-                                                                     0);
+    new G4PVPlacement(0, G4ThreeVector(-40.0 * mm, 0., dZShift), m_pCryostatLogicalVolume, "Cryostat",
+                      m_pChamberLogicalVolume, false, 0);
 
 //--- PE hat right on top of the cryostat ---
 // the thickness is 1mm, the diameter is the same as cryostat
@@ -181,12 +169,9 @@ G4bool DSCEMMXDetector::construct()
     pDPhi = 360.0 * deg;
     G4Tubs *pCryostatInnerTubs = new G4Tubs("CryostatInnerTubs", pRMin, pRMax, pDz, pSPhi, pDPhi);
     G4LogicalVolume *m_pCryostatVacuumLogicalVolume = new G4LogicalVolume(pCryostatInnerTubs, Vacuum,
-                                                                          "CryostatInnerLogicalVolume", 0, 0,
-                                                                          0);
-    G4VPhysicalVolume *m_pCryostatVacuumPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
-                                                                           m_pCryostatVacuumLogicalVolume,
-                                                                           "CryostatVacuum",
-                                                                           m_pCryostatLogicalVolume, false, 0);
+                                                                          "CryostatInnerLogicalVolume", 0, 0, 0);
+    new G4PVPlacement(0, G4ThreeVector(0, 0, 0), m_pCryostatVacuumLogicalVolume, "CryostatVacuum",
+                      m_pCryostatLogicalVolume, false, 0);
 
 //--- a copper cup holding the HPGe
 // the total height is 130mm, the oute diameter is 100mm
@@ -210,9 +195,8 @@ G4bool DSCEMMXDetector::construct()
 
     G4LogicalVolume *m_pCopperCupLogicalVolume = new G4LogicalVolume(pCopperCupTubs, Copper, "CopperCupLogicalVolume",
                                                                      0, 0, 0);
-    G4VPhysicalVolume *m_pCopperCupPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 44.1 * mm),
-                                                                      m_pCopperCupLogicalVolume, "CopperCup",
-                                                                      m_pCryostatVacuumLogicalVolume, false, 0);
+    new G4PVPlacement(0, G4ThreeVector(0, 0, 44.1 * mm), m_pCopperCupLogicalVolume, "CopperCup",
+                      m_pCryostatVacuumLogicalVolume, false, 0);
 
 //--- HPGe ---
 // the total crystal is 93.8mm in diameter, 103.7mm in height, the side deadlayer is 0.7mm
@@ -236,10 +220,8 @@ G4bool DSCEMMXDetector::construct()
 
     G4LogicalVolume *m_pCrystalLogicalVolume = new G4LogicalVolume(pCrystalTubs, natGe, "CrystalLogicalVolume", 0, 0,
                                                                    0);
-    G4VPhysicalVolume *m_pCrystalPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 57.25 * mm),
-                                                                    m_pCrystalLogicalVolume, "Crystal",
-                                                                    m_pCryostatVacuumLogicalVolume,
-                                                                    false, 0);
+    new G4PVPlacement(0, G4ThreeVector(0, 0, 57.25 * mm), m_pCrystalLogicalVolume, "Crystal",
+                      m_pCryostatVacuumLogicalVolume, false, 0);
 
 
     G4String SDName = _partName;
@@ -263,11 +245,8 @@ G4bool DSCEMMXDetector::construct()
     G4Tubs *pCrystalDeadlayerTubs = new G4Tubs("CrystalDeadlayerTubs", pRMin, pRMax, pDz, pSPhi, pDPhi);
     G4LogicalVolume *m_pCrystalDeadlayerLogicalVolume = new G4LogicalVolume(pCrystalDeadlayerTubs, natGe,
                                                                             "CrystalDeadlayerLogicalVolume", 0, 0, 0);
-    G4VPhysicalVolume *m_pCrystalDeadlayerPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 57.25 * mm),
-                                                                             m_pCrystalDeadlayerLogicalVolume,
-                                                                             "CrystalDeadlayer",
-                                                                             m_pCryostatVacuumLogicalVolume, false, 0);
-
+    new G4PVPlacement(0, G4ThreeVector(0, 0, 57.25 * mm), m_pCrystalDeadlayerLogicalVolume, "CrystalDeadlayer",
+                      m_pCryostatVacuumLogicalVolume, false, 0);
 
 //--- attributes ---
     G4Colour hPEShieldColor(1., 1., 1., 1.);
@@ -305,5 +284,6 @@ G4bool DSCEMMXDetector::construct()
     pCrystalDeadlayerVisAtt->SetForceSolid(true);
     m_pCrystalDeadlayerLogicalVolume->SetVisAttributes(pCrystalDeadlayerVisAtt);
 
-    G4cout << " end constructing shield and HPGe" << G4endl;
+    G4cout << "Counting Station CEMMX Detector Constructed." << G4endl;
+    return true;
 }

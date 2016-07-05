@@ -6,7 +6,7 @@
 #include <G4Box.hh>
 #include <G4PVPlacement.hh>
 #include <G4LogicalVolume.hh>
-#include "detector/DSLaboratory.hh"
+#include "detector/CSLaboratory.hh"
 #include "detector/BambooDetectorFactory.hh"
 #include "BambooGlobalVariables.hh"
 #include "BambooUtils.hh"
@@ -14,19 +14,19 @@
 namespace
 {
 
-    BambooDetectorPart *createDSLaboratory(const G4String &name)
+    BambooDetectorPart *createCSLaboratory(const G4String &name)
     {
-        return new DSLaboratory(name);
+        return new CSLaboratory(name);
     }
 
-    const std::string DSLaboratoryName("DSLaboratory");
+    const std::string CSLaboratoryName("CSLaboratory");
 
-    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(DSLaboratoryName,
-                                                                                    createDSLaboratory);
+    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(CSLaboratoryName,
+                                                                                    createCSLaboratory);
 }
 
 
-DSLaboratory::DSLaboratory(const G4String &name)
+CSLaboratory::CSLaboratory(const G4String &name)
         : BambooDetectorPart(name)
 {
     DetectorParameters dp = BambooGlobalVariables::Instance()
@@ -42,15 +42,15 @@ DSLaboratory::DSLaboratory(const G4String &name)
         _halfZ = 1 * m;
 }
 
-G4bool DSLaboratory::construct()
+G4bool CSLaboratory::construct()
 {
-    G4cout << "Detector Station Laboratory Found." << G4endl;
+    G4cout << "Counting Station Laboratory Found." << G4endl;
     G4Material *Air = G4Material::GetMaterial("G4_AIR");
     G4Box *worldBox = new G4Box("LabBox", _halfX, _halfY, _halfZ);
     _partLogicalVolume = new G4LogicalVolume(worldBox, Air, "LabLogicalVolume", 0, 0, 0);
     _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "Lab", 0, false, 0);
     _partContainerLogicalVolume = _partLogicalVolume;
 
-    G4cout << "Detector Station Laboratory Constructed." << G4endl;
+    G4cout << "Counting Station Laboratory Constructed." << G4endl;
     return true;
 }

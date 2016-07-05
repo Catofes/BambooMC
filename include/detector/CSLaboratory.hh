@@ -7,10 +7,10 @@
 
 #include "detector/BambooDetectorPart.hh"
 
-class DSLaboratory : public BambooDetectorPart
+class CSLaboratory : public BambooDetectorPart
 {
 public:
-    DSLaboratory(const G4String &name);
+    CSLaboratory(const G4String &name);
 
     virtual G4bool construct();
 

@@ -8,10 +8,10 @@
 
 #include "detector/BambooMaterial.hh"
 
-class DSMaterial : public BambooMaterial
+class CSMaterial : public BambooMaterial
 {
 public:
-    DSMaterial(const G4String &name);
+    CSMaterial(const G4String &name);
 
     virtual void defineMaterials();
 };

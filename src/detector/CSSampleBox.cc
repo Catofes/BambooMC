@@ -6,7 +6,7 @@
 #include <G4Box.hh>
 #include <G4PVPlacement.hh>
 #include <G4LogicalVolume.hh>
-#include "detector/DSSampleBox.hh"
+#include "detector/CSSampleBox.hh"
 #include "detector/BambooDetectorFactory.hh"
 #include "BambooGlobalVariables.hh"
 #include "BambooUtils.hh"
@@ -14,17 +14,17 @@
 namespace
 {
 
-    BambooDetectorPart *createDSSampleBox(const G4String &name)
+    BambooDetectorPart *createCSSampleBox(const G4String &name)
     {
-        return new DSSampleBox(name);
+        return new CSSampleBox(name);
     }
 
-    const std::string DSSampleBoxName("DSSampleBox");
+    const std::string CSSampleBoxName("CSSampleBox");
 
-    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(DSSampleBoxName, createDSSampleBox);
+    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(CSSampleBoxName, createCSSampleBox);
 }
 
-DSSampleBox::DSSampleBox(const G4String &name)
+CSSampleBox::CSSampleBox(const G4String &name)
         : BambooDetectorPart(name)
 {
     DetectorParameters dp = BambooGlobalVariables::Instance()
@@ -63,8 +63,9 @@ DSSampleBox::DSSampleBox(const G4String &name)
     }
 }
 
-G4bool DSSampleBox::construct()
+G4bool CSSampleBox::construct()
 {
+    G4cout << "Counting Station Sample Box Found." << G4endl;
     G4Material *sampleMaterial = G4Material::GetMaterial(_material);
     if (!sampleMaterial)
         throw std::runtime_error("Can not find material for sample.");
@@ -75,5 +76,6 @@ G4bool DSSampleBox::construct()
                       _ChamberHeight * 0.5 - _PEHatTopSurfaceToChamberTopSurface + 1.0 * mm + _halfZ + _shiftZ);
     _partPhysicalVolume = new G4PVPlacement(0, loc, _partLogicalVolume, "sample",
                                             _parentPart->getContainerLogicalVolume(), false, 0);
+    G4cout << "Counting Station Sample Box Constructed" << G4endl;
     return true;
 }
