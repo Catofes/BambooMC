@@ -11,7 +11,7 @@
 class DSMaterial : public BambooMaterial
 {
 public:
-    DSMaterial();
+    DSMaterial(const G4String &name);
 
     virtual void defineMaterials();
 };

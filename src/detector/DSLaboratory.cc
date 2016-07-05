@@ -2,6 +2,10 @@
 // Created by herbertqiao on 7/5/16.
 //
 
+#include <G4Material.hh>
+#include <G4Box.hh>
+#include <G4PVPlacement.hh>
+#include <G4LogicalVolume.hh>
 #include "detector/DSLaboratory.hh"
 #include "detector/BambooDetectorFactory.hh"
 #include "BambooGlobalVariables.hh"
@@ -10,12 +14,43 @@
 namespace
 {
 
-    BambooDetectorPart *createLatexWorld(const G4String &name)
+    BambooDetectorPart *createDSLaboratory(const G4String &name)
     {
-        return new LatexWorld(name);
+        return new DSLaboratory(name);
     }
 
-    const std::string LatexWorldName("LatexWorld");
+    const std::string DSLaboratoryName("DSLaboratory");
 
-    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(LatexWorldName, createLatexWorld);
+    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(DSLaboratoryName,
+                                                                                    createDSLaboratory);
+}
+
+
+DSLaboratory::DSLaboratory(const G4String &name)
+        : BambooDetectorPart(name)
+{
+    DetectorParameters dp = BambooGlobalVariables::Instance()
+            ->findDetectorPartParameters(_partName);
+    _halfX = BambooUtils::evaluate(dp.getParameterAsString("half_x"));
+    _halfY = BambooUtils::evaluate(dp.getParameterAsString("half_y"));
+    _halfZ = BambooUtils::evaluate(dp.getParameterAsString("half_z"));
+    if (_halfX <= 0)
+        _halfX = 1 * m;
+    if (_halfY <= 0)
+        _halfY = 1 * m;
+    if (_halfZ <= 0)
+        _halfZ = 1 * m;
+}
+
+G4bool DSLaboratory::construct()
+{
+    G4cout << "Detector Station Laboratory Found." << G4endl;
+    G4Material *Air = G4Material::GetMaterial("G4_AIR");
+    G4Box *worldBox = new G4Box("LabBox", _halfX, _halfY, _halfZ);
+    _partLogicalVolume = new G4LogicalVolume(worldBox, Air, "LabLogicalVolume", 0, 0, 0);
+    _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "Lab", 0, false, 0);
+    _partContainerLogicalVolume = _partLogicalVolume;
+
+    G4cout << "Detector Station Laboratory Constructed." << G4endl;
+    return true;
 }

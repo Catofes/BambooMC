@@ -24,7 +24,8 @@ namespace
     const bool registered = BambooMaterialFactory::Instance()->registerMaterial(DSMaterialName, createDSMaterial);
 }
 
-DSMaterial::DSMaterial()
+DSMaterial::DSMaterial(const G4String &name) :
+        BambooMaterial(name)
 {
     G4cout << "DetectorStation Material Found." << G4endl;
 }
@@ -71,16 +72,58 @@ void DSMaterial::defineMaterials()
     elementVec.push_back(Ni);
     G4Element *Cu = pNistManager->FindOrBuildElement(29);
     elementVec.push_back(Cu);
+    G4Element *Mo = pNistManager->FindOrBuildElement(42);
+    elementVec.push_back(Mo);
+    G4Element *La = pNistManager->FindOrBuildElement(57);
+    elementVec.push_back(La);
     G4Element *Pb = pNistManager->FindOrBuildElement(82);
     elementVec.push_back(Pb);
+    G4Element *Th = pNistManager->FindOrBuildElement(90);
+    elementVec.push_back(Th);
     G4Element *Sn = pNistManager->FindOrBuildElement(50);
     elementVec.push_back(Sn);
 
-    G4Isotope *Ge70 = new G4Isotope(name = "Ge70", 32, 70, 69.92 * g / mole);
-    G4Isotope *Ge72 = new G4Isotope(name = "Ge72", 32, 72, 71.92 * g / mole);
-    G4Isotope *Ge73 = new G4Isotope(name = "Ge73", 32, 73, 73.0 * g / mole);
-    G4Isotope *Ge74 = new G4Isotope(name = "Ge74", 32, 74, 74.0 * g / mole);
-    G4Isotope *Ge76 = new G4Isotope(name = "Ge76", 32, 76, 76.0 * g / mole);
+    G4Isotope *Ge70 = new G4Isotope("Ge70", 32, 70, 69.92 * g / mole);
+    G4Isotope *Ge72 = new G4Isotope("Ge72", 32, 72, 71.92 * g / mole);
+    G4Isotope *Ge73 = new G4Isotope("Ge73", 32, 73, 73.0 * g / mole);
+    G4Isotope *Ge74 = new G4Isotope("Ge74", 32, 74, 74.0 * g / mole);
+    G4Isotope *Ge76 = new G4Isotope("Ge76", 32, 76, 76.0 * g / mole);
+
+    double a = 75.71 * g / mole;
+    G4int nIsotopes = 5;
+    G4Element *elGeNat = new G4Element("naturalGermanium", "GeNat", nIsotopes);
+    elGeNat->AddIsotope(Ge70, 20.9 * perCent);
+    elGeNat->AddIsotope(Ge72, 27.5 * perCent);
+    elGeNat->AddIsotope(Ge73, 7.7 * perCent);
+    elGeNat->AddIsotope(Ge74, 36.3 * perCent);
+    elGeNat->AddIsotope(Ge76, 7.6 * perCent);
+
+    G4Element *elGeEnr = new G4Element("enrichedGermanium", "GeEnr", nIsotopes);
+    elGeEnr->AddIsotope(Ge70, 0.0 * perCent);
+    elGeEnr->AddIsotope(Ge72, 0.1 * perCent);
+    elGeEnr->AddIsotope(Ge73, 0.2 * perCent);
+    elGeEnr->AddIsotope(Ge74, 13.1 * perCent);
+    elGeEnr->AddIsotope(Ge76, 86.6 * perCent);
+
+//---> soldering tin simulation
+    G4Isotope *Sn116 = new G4Isotope("Sn116", 50, 116, 116.0 * g / mole);
+    G4Isotope *Sn117 = new G4Isotope("Sn117", 50, 117, 117.0 * g / mole);
+    G4Isotope *Sn118 = new G4Isotope("Sn118", 50, 118, 118.0 * g / mole);
+    G4Isotope *Sn119 = new G4Isotope("Sn119", 50, 119, 119.0 * g / mole);
+    G4Isotope *Sn120 = new G4Isotope("Sn120", 50, 120, 120.0 * g / mole);
+    G4Isotope *Sn122 = new G4Isotope("Sn122", 50, 122, 122.0 * g / mole);
+    G4Isotope *Sn124 = new G4Isotope("Sn124", 50, 124, 124.0 * g / mole);
+
+    nIsotopes = 7;
+    G4Element *elSnNat = new G4Element("naturalTin", "SnNat", nIsotopes);
+    elSnNat->AddIsotope(Sn116, 15.0 * perCent);
+    elSnNat->AddIsotope(Sn117, 8.0 * perCent);
+    elSnNat->AddIsotope(Sn118, 24.0 * perCent);
+    elSnNat->AddIsotope(Sn119, 9.0 * perCent);
+    elSnNat->AddIsotope(Sn120, 33.0 * perCent);
+    elSnNat->AddIsotope(Sn122, 5.0 * perCent);
+    elSnNat->AddIsotope(Sn124, 6.0 * perCent);
+
 
     //------------------------------------- air -------------------------------------
     G4Material *G4_AIR = pNistManager->FindOrBuildMaterial("G4_AIR");
@@ -127,6 +170,7 @@ void DSMaterial::defineMaterials()
     materialVec.push_back(Polyethylene);
 
     //------------------------------------ copper -----------------------------------
+    G4int iNbEntries = 3;
     G4Material *Copper = new G4Material("Copper", 8.92 * g / cm3, 1);
     Copper->AddElement(Cu, 1);
     G4double pdCopperPhotonMomentum[] = {6.91 * eV, 6.98 * eV, 7.05 * eV};
@@ -136,22 +180,23 @@ void DSMaterial::defineMaterials()
     Copper->SetMaterialPropertiesTable(pCopperPropertiesTable);
     materialVec.push_back(Copper);
 
+    double density;
     // natural germanium
     density = 5.32 * g / cm3;
-    G4Material *natGe = new G4Material(name = "NaturalGe", density, 1);
-    natGe->AddElement(elGeNat, natoms = 1);
+    G4Material *natGe = new G4Material("NaturalGe", density, 1);
+    natGe->AddElement(elGeNat, 1);
     materialVec.push_back(natGe);
 
     // enriched germanium
     density = 5.54 * g / cm3;
-    G4Material *enrGe = new G4Material(name = "EnrichedGe", density, 1);
-    enrGe->AddElement(elGeEnr, natoms = 1);
+    G4Material *enrGe = new G4Material("EnrichedGe", density, 1);
+    enrGe->AddElement(elGeEnr, 1);
     materialVec.push_back(enrGe);
 
     // soldering tin
     density = 6.99 * g / cm3;
-    G4Material *natSn = new G4Material(name = "SolderingTin", density, 1);
-    natSn->AddElement(elSnNat, natoms = 1);
+    G4Material *natSn = new G4Material("SolderingTin", density, 1);
+    natSn->AddElement(elSnNat, 1);
     materialVec.push_back(natSn);
 
     //------- soil 25% air 25% water 45% SiO2 5% TISSUE ------
@@ -220,7 +265,7 @@ void DSMaterial::defineMaterials()
 
     //------------------------------- Carbon Fibre ----------------------------------------
     G4Material *carbonf = new G4Material("CarbonFibre", 1.75 * g / cm3, 1);
-    carbonf->AddElement(C, natoms = 1);
+    carbonf->AddElement(C, 1);
 
     //------------------------------- Th(NO3)4.4H2O crystal ----------------------------------------
     G4Material *th228crystal = new G4Material("th228crystal", 2.80 * g / cm3, 4);
