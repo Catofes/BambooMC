@@ -14,9 +14,9 @@
 
 namespace {
 
-  BambooDetectorPart * createCopperVessel ()
+  BambooDetectorPart * createCopperVessel (const G4String & name)
   {
-    return new CopperVessel("CopperVessel");
+    return new CopperVessel(name);
   }
 
   const std::string CopperVesselName("CopperVessel");
@@ -28,7 +28,7 @@ CopperVessel::CopperVessel (const G4String & name)
   : BambooDetectorPart(name)
 {
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("CopperVessel");
+    ->findDetectorPartParameters(_partName);
 
   _outerRadius = dp.getParameterAsDouble("outerRadius") * mm;
   _wallThickness = dp.getParameterAsDouble("wallThickness") * mm;

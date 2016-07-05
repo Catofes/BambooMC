@@ -16,9 +16,9 @@
 
 namespace {
 
-  BambooDetectorPart * createSteelSupporting ()
+  BambooDetectorPart * createSteelSupporting (const G4String & name)
   {
-    return new SteelSupporting("SteelSupporting");
+    return new SteelSupporting(name);
   }
 
   const std::string SteelSupportingName("SteelSupporting");

@@ -26,14 +26,14 @@
 
 namespace {
 
-  BambooDetectorPart * createHpXenonGasDetector ()
+  BambooDetectorPart * createHpXenonGasDetector (const G4String & name)
   {
-    return new HpXenonGasDetector("HpXenonGasDetector");
+    return new HpXenonGasDetector(name);
   }
 
-  const std::string HpXenonGasDetectorName("HpXenonGasDetector");
+  const std::string HpXenonGasDetectorType("HpXenonGasDetector");
 
-  const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(HpXenonGasDetectorName, createHpXenonGasDetector);
+  const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(HpXenonGasDetectorType, createHpXenonGasDetector);
 }
 
 HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
@@ -42,7 +42,7 @@ HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
   //  BambooGlobalVariables *bgv = BambooGlobalVariables::Instance();
 
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("HpXenonGasDetector");
+    ->findDetectorPartParameters(_partName);
 
   _vesselInnerRadius = BambooUtils::evaluate(dp.getParameterAsString("vessel_inner_radius"));
   _vesselBarrelThickness = BambooUtils::evaluate(dp.getParameterAsString("vessel_barrel_thickness"));

@@ -15,9 +15,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIIOuterRock ()
+  BambooDetectorPart * createPandaXIIIOuterRock (const G4String & name)
   {
-    return new PandaXIIIOuterRock("PandaXIIIOuterRock");
+    return new PandaXIIIOuterRock(name);
   }
 
   const std::string PandaXIIIOuterRockName("PandaXIIIOuterRock");
@@ -29,7 +29,7 @@ PandaXIIIOuterRock::PandaXIIIOuterRock (const G4String & name)
   : BambooDetectorPart(name)
 {
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("PandaXIIIOuterRock");
+    ->findDetectorPartParameters(_partName);
   _halfX = dp.getParameterAsDouble("half_x") * mm;
   _halfY = dp.getParameterAsDouble("half_y") * mm;
   _halfZ = dp.getParameterAsDouble("half_z") * mm;

@@ -14,9 +14,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIIFakeElectronics ()
+  BambooDetectorPart * createPandaXIIIFakeElectronics (const G4String & name)
   {
-    return new PandaXIIIFakeElectronics("PandaXIIIFakeElectronics");
+    return new PandaXIIIFakeElectronics(name);
   }
 
   const std::string PandaXIIIFakeElectronicsName("PandaXIIIFakeElectronics");
@@ -28,7 +28,7 @@ PandaXIIIFakeElectronics::PandaXIIIFakeElectronics (const G4String & name)
   : BambooDetectorPart(name)
 {
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("PandaXIIIFakeElectronics");
+    ->findDetectorPartParameters(_partName);
 
   _radius = BambooUtils::evaluate(dp.getParameterAsString("radius"));
   _distance = BambooUtils::evaluate(dp.getParameterAsString("distance"));

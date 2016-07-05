@@ -20,9 +20,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIILab ()
+  BambooDetectorPart * createPandaXIIILab (const G4String & name)
   {
-    return new PandaXIIILab("PandaXIIILab");
+    return new PandaXIIILab(name);
   }
 
   const std::string PandaXIIILabName("PandaXIIILab");
@@ -34,7 +34,7 @@ PandaXIIILab::PandaXIIILab (const G4String & name)
   : BambooDetectorPart(name)
 {
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("PandaXIIILab");
+    ->findDetectorPartParameters(_partName);
 
   _length = BambooUtils::evaluate(dp.getParameterAsString("length"));
   _width = BambooUtils::evaluate(dp.getParameterAsString("width"));

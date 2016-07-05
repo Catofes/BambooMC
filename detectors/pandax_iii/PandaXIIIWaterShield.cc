@@ -19,9 +19,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIIWaterShield ()
+  BambooDetectorPart * createPandaXIIIWaterShield (const G4String & name)
   {
-    return new PandaXIIIWaterShield("PandaXIIIWaterShield");
+    return new PandaXIIIWaterShield(name);
   }
 
   const std::string PandaXIIIWaterShieldName("PandaXIIIWaterShield");
@@ -33,7 +33,7 @@ PandaXIIIWaterShield::PandaXIIIWaterShield (const G4String & name)
   : BambooDetectorPart(name)
 {
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("PandaXIIIWaterShield");
+    ->findDetectorPartParameters(_partName);
   _radius = dp.getParameterAsDouble("radius") * mm;
   _length=dp.getParameterAsDouble("length")*mm;
   _height = dp.getParameterAsDouble("height") * mm;
