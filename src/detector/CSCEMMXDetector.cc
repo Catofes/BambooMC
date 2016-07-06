@@ -32,6 +32,7 @@ namespace
 CSCEMMXDetector::CSCEMMXDetector(const G4String &name)
         : BambooDetectorPart(name)
 {
+    _typeName = "CSCEMMXDetector";
     TopShieldOpen = false;
 }
 

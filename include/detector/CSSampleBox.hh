@@ -23,8 +23,6 @@ private:
     double _shiftX;
     double _shiftY;
     double _shiftZ;
-    double _ChamberHeight;
-    double _PEHatTopSurfaceToChamberTopSurface;
 };
 
 #endif //BAMBOOMC_DSSAMPLEBOX_HH

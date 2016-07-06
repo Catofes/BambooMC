@@ -45,22 +45,6 @@ CSSampleBox::CSSampleBox(const G4String &name)
         _halfZ = 10 * cm;
     if (_material == "")
         throw std::runtime_error("No Material Found For Smaple.");
-    int temp = 2;
-    if (_detectorType == "BE")
-        temp = 1;
-    if (_detectorType == "CEMMX")
-        temp = 2;
-    switch (temp) {
-        case 1:
-            _ChamberHeight = 350 * mm;
-            _PEHatTopSurfaceToChamberTopSurface = 119 * mm;
-            break;
-        case 2:
-        default:
-            _ChamberHeight = 350 * mm;
-            _PEHatTopSurfaceToChamberTopSurface = 119 * mm;
-            break;
-    }
 }
 
 G4bool CSSampleBox::construct()
@@ -72,8 +56,15 @@ G4bool CSSampleBox::construct()
 
     G4Box *sampleBox = new G4Box("pmmabox", _halfX, _halfY, _halfZ);
     _partLogicalVolume = new G4LogicalVolume(sampleBox, sampleMaterial, "sampleBoxLV", 0, 0, 0);
-    G4ThreeVector loc(-40.0 * mm + _shiftX, _shiftY,
-                      _ChamberHeight * 0.5 - _PEHatTopSurfaceToChamberTopSurface + 1.0 * mm + _halfZ + _shiftZ);
+    G4ThreeVector loc(0, 0, 0);
+    if (_parentPart->getType() == "CSCEMMXDetector")
+        //G4ThreeVector(-40.0*mm, 0.0, ChamberHeight*0.5- PEHatTopSurfaceToChamberTopSurface+1.0*mm+0.5*pmmaH)
+        loc.set(-40 * mm + _shiftX, _shiftY, 57 * mm + _halfZ + _shiftZ);
+    else if (_parentPart->getType() == "CSBEDetector")
+        //G4ThreeVector(DistanceCryostatCuWall-54.5*mm,0.0,PEHatZOffset+PEHatHeight/2.0+0.5*pmmaH)
+        loc.set(-44 * mm + _shiftX, _shiftY, 0.9 * mm + _halfZ + _shiftZ);
+    else
+        loc.set(0, 0, 0);
     _partPhysicalVolume = new G4PVPlacement(0, loc, _partLogicalVolume, "sample",
                                             _parentPart->getContainerLogicalVolume(), false, 0);
     G4cout << "Counting Station Sample Box Constructed" << G4endl;
