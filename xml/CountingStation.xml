@@ -18,8 +18,14 @@
         </detector>
     </geometry>
     <physics name="SimpleUnderGroundPhysics">
-        <parameter name="cutlength" value="0.005*mm"/>
+        <parameter name="cutlength" value="0.02*mm"/>
     </physics>
     <generator name="SimpleGPSGenerator"/>
-    <analysis name="PandaXAnalysis"/>
+    <analysis name="PandaXAnalysis">
+        <parameter name="EnableEnergyDeposition" value="1"/>
+        <parameter name="EnableFlatSurfaceFlux" value="0"/>
+        <parameter name="enable_primary_particle" value="1"/>
+        <parameter name="save_null_event" value="0"/>
+        <parameter name="enable_decay_chain_splitting" value="1"/>
+    </analysis>
 </BambooMC>
