@@ -8,14 +8,15 @@
             <parameter name="half_y" value="1*m"/>
             <parameter name="half_z" value="1*m"/>
         </detector>
-        <!--<detector name="HpGe" type="CSCEMMXDetector" parent="Lab"/>-->
-        <detector name="HpGe" type="CSBEDetector" parent="Lab"/>
-        <detector name="sample" type="CSSampleBox" parent="HpGe">
+        <detector name="HpGe" type="CSCEMMXDetector" parent="Lab"/>
+        <!--detector name="HpGe" type="CSBEDetector" parent="Lab"/-->
+        <!--detector name="sample" type="CSSampleBox" parent="HpGe">
             <parameter name="half_y" value="50*mm"/>
             <parameter name="half_x" value="23*mm"/>
             <parameter name="half_z" value="11.5*mm"/>
             <parameter name="material" value="whitecopper"/>
-        </detector>
+        </detector-->
+        <detector name="sample" type="CSSampleBottle" parent="HpGe"/>
     </geometry>
     <physics name="SimpleUnderGroundPhysics">
         <parameter name="cutlength" value="0.02*mm"/>
