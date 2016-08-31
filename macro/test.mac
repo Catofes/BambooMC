@@ -1,0 +1,6 @@
+/gps/pos/type Point
+/gps/pos/centre 0 0 0
+/gps/ang/type iso
+/gps/particle ion
+/gps/ion 55 137
+/gps/energy 0 MeV
