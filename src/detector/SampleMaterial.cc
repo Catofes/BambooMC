@@ -123,6 +123,43 @@ void SampleMaterial::defineMaterials()
   G4Material * liquidXenon = pNistManager->FindOrBuildMaterial("G4_lXe");
   materialVec.push_back (liquidXenon);
 
+  G4Material * gasXenon = pNistManager->FindOrBuildMaterial("G4_Xe");
+  materialVec.push_back (gasXenon);
+
+  G4Material * lowCarbonSteel = new G4Material("Low_Carbon_Steel", 7.85*g/cm3, 3);
+  lowCarbonSteel->AddElement(Fe, 0.988);
+  lowCarbonSteel->AddElement(C, 0.002);
+  lowCarbonSteel->AddElement(Mn, 0.01);
+
+  materialVec.push_back(lowCarbonSteel);
+
+  double _enrichedXenonDensity = gasXenon->GetDensity();
+  double _tmaMassFraction = 0.01;
+  double xenon_unit_amount = _enrichedXenonDensity*m3/(gasXenon->GetA()*mole);
+  double tmaDensity = _enrichedXenonDensity * _tmaMassFraction;
+  double tma_molecule_mass = 59.1103 * g/mole;
+  double tma_unit_amount = tmaDensity*m3/(tma_molecule_mass*mole);
+  double tmaPressure = 1*atmosphere * tma_unit_amount / xenon_unit_amount;
+  G4cout << "TMA pressure = " << tmaPressure / bar << " bar." << G4endl;
+  G4cout << "TMA unit amount " << tma_unit_amount << " mole." <<  G4endl;
+  G4cout << "TMA mole fraction " << tma_unit_amount/(tma_unit_amount+xenon_unit_amount) << G4endl;
+  G4cout << "TMA density: " << tmaDensity/kg*m3 << " kg/m3" << G4endl;
+  G4Material * TMA = new G4Material("Trimethylamine", tmaDensity, 3, kStateGas, 300 * kelvin, tmaPressure);
+  TMA->AddElement(N, 1);
+  TMA->AddElement(C, 3);
+  TMA->AddElement(H, 9);
+  materialVec.push_back(TMA);
+
+  G4cout << "TMA molecule mass: " << TMA->GetMassOfMolecule()/g*Avogadro << " g/mol." << G4endl;
+
+  // hpxe + tma mixture
+  double xe_tma_density = _enrichedXenonDensity + tmaDensity;
+  G4Material * XeTMAMixture = new G4Material("XeTMAMixture", xe_tma_density, 2, kStateGas, 300 * kelvin, 1*atmosphere + tmaPressure);
+  XeTMAMixture->AddMaterial(gasXenon, 1. / (1. + _tmaMassFraction));
+  XeTMAMixture->AddMaterial(TMA, _tmaMassFraction / (1. + _tmaMassFraction));
+  materialVec.push_back(XeTMAMixture);
+
+
   G4cout << "Available materials: " << G4endl;
   for (size_t i=0; i<materialVec.size(); ++i) {
     G4cout << materialVec[i]->GetName() << " ";

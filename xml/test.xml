@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BambooMC>
+    <run number="9001"/>
+    <geometry>
+        <material name="SampleMaterial"/>
+        <detector name="Lab" type="CSLaboratory">
+            <parameter name="half_x" value="1*m"/>
+            <parameter name="half_y" value="1*m"/>
+            <parameter name="half_z" value="1*m"/>
+        </detector>
+        <detector name="SteelShell" type="SampleCylinderDetector" parent="Lab">
+            <parameter name="radius" value="40*cm"/>
+            <parameter name="height" value="80*cm"/>
+            <parameter name="material" value="Low_Carbon_Steel"/>
+        </detector>
+        <detector name="InnerGas" type="SampleCylinderDetector" parent="SteelShell">
+            <parameter name="radius" value="30*cm"/>
+            <parameter name="height" value="70*cm"/>
+            <parameter name="material" value="XeTMAMixture"/>
+        </detector>
+        <detector name="Sentive" type="SampleBoxDetector" parent="InnerGas">
+            <parameter name="half_x" value="10*cm"/>
+            <parameter name="half_y" value="10*cm"/>
+            <parameter name="half_z" value="35*cm"/>
+        </detector>
+        <!--detector name="HpGe" type="CSBEDetector" parent="Lab"/-->
+        <!--detector name="sample" type="CSSampleBox" parent="HpGe">
+            <parameter name="half_y" value="50*mm"/>
+            <parameter name="half_x" value="23*mm"/>
+            <parameter name="half_z" value="11.5*mm"/>
+            <parameter name="material" value="whitecopper"/>
+        </detector-->
+    </geometry>
+    <physics name="SimpleUnderGroundPhysics">
+        <parameter name="cutlength" value="0.02*mm"/>
+    </physics>
+    <generator name="SimpleGPSGenerator"/>
+    <analysis name="PandaXAnalysis">
+        <parameter name="EnableEnergyDeposition" value="1"/>
+        <parameter name="EnableFlatSurfaceFlux" value="0"/>
+        <parameter name="enable_primary_particle" value="1"/>
+        <parameter name="save_null_event" value="0"/>
+        <parameter name="enable_decay_chain_splitting" value="1"/>
+    </analysis>
+</BambooMC>

@@ -15,6 +15,8 @@ private:
   double _shiftX;
   double _shiftY;
   double _shiftZ;
+    G4String _material;
+    bool _sensitive;
 };
 
 
