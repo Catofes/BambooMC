@@ -82,6 +82,12 @@ void CSMaterial::defineMaterials()
     elementVec.push_back(Th);
     G4Element *Sn = pNistManager->FindOrBuildElement(50);
     elementVec.push_back(Sn);
+    //G4Element *Am = new G4Element("Americium", "Am", 95., 241.0*g/mole); // Am241, AmBe powder
+    G4Element *Am = pNistManager->FindOrBuildElement(95);
+    elementVec.push_back(Am);
+    G4Element *Be = new G4Element("Beryllium", "Be", 4.,  9.0121822*g/mole); // Be9, AmBe powder
+    elementVec.push_back(Be);
+
 
     G4Isotope *Ge70 = new G4Isotope("Ge70", 32, 70, 69.92 * g / mole);
     G4Isotope *Ge72 = new G4Isotope("Ge72", 32, 72, 71.92 * g / mole);
@@ -285,6 +291,12 @@ void CSMaterial::defineMaterials()
     whitecopper->AddElement(Cu, 0.73481);
     whitecopper->AddElement(Ni, 0.26519);
     materialVec.push_back(whitecopper);
+
+    G4Material *AmBepowder = new G4Material("AmBepowder", 1.821*g/cm3, 3, kStateSolid);
+    AmBepowder->AddElement(Am, 1);
+    AmBepowder->AddElement(Be, 370);
+    AmBepowder->AddElement(O, 2);
+    materialVec.push_back(AmBepowder);
 
     G4cout << "Available materials: " << G4endl;
     for (size_t i = 0; i < materialVec.size(); ++i) {

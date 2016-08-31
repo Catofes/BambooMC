@@ -16,7 +16,7 @@
             <parameter name="half_z" value="11.5*mm"/>
             <parameter name="material" value="whitecopper"/>
         </detector-->
-        <detector name="sample" type="CSSampleBottle" parent="HpGe"/>
+        <detector name="sample" type="CSSampleAmBeSource" parent="HpGe"/>
     </geometry>
     <physics name="SimpleUnderGroundPhysics">
         <parameter name="cutlength" value="0.02*mm"/>
