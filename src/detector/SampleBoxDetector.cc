@@ -37,6 +37,7 @@ SampleBoxDetector::SampleBoxDetector(const G4String &name)
     _shiftY = BambooUtils::evaluate(dp.getParameterAsString("shift_y"));
     _shiftZ = BambooUtils::evaluate(dp.getParameterAsString("shift_z"));
     _material = dp.getParameterAsString("material");
+    _sensitive = dp.getParameterAsInt("sensitive") == 1? true:false;
     if (_halfX == 0) {
         _halfX = 1.0 * m;
     }
@@ -74,10 +75,12 @@ G4bool SampleBoxDetector::construct() {
     _partLogicalVolume->SetVisAttributes(sampleBoxVisAtt);
 
     // add sensitive detector for energy deposition
-    PandaXSensitiveDetector *sampleBoxSD = new PandaXSensitiveDetector("SampleBoxSD");
-    G4SDManager *sdManager = G4SDManager::GetSDMpointer();
-    sdManager->AddNewDetector(sampleBoxSD);
-    _partLogicalVolume->SetSensitiveDetector(sampleBoxSD);
+    if(_sensitive) {
+        PandaXSensitiveDetector *sampleBoxSD = new PandaXSensitiveDetector("SampleBoxSD");
+        G4SDManager *sdManager = G4SDManager::GetSDMpointer();
+        sdManager->AddNewDetector(sampleBoxSD);
+        _partLogicalVolume->SetSensitiveDetector(sampleBoxSD);
+    }
 
     return true;
 }

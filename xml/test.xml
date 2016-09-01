@@ -18,11 +18,17 @@
             <parameter name="height" value="70*cm"/>
             <parameter name="material" value="XeTMAMixture"/>
         </detector>
-        <detector name="Sentive" type="SampleBoxDetector" parent="InnerGas">
+        <detector name="Sensitive" type="SampleBoxDetector" parent="InnerGas">
             <parameter name="half_x" value="10*cm"/>
             <parameter name="half_y" value="10*cm"/>
             <parameter name="half_z" value="35*cm"/>
             <parameter name="material" value="XeTMAMixture"/>
+            <parameter name="sensitive" value="1"/>
+        </detector>
+        <detector name="SteelContainer" type="SampleCylinderDetector" parent="Sensitive">
+            <parameter name="radius" value="0.5*cm"/>
+            <parameter name="height" value="1*cm"/>
+            <parameter name="material" value="Low_Carbon_Steel"/>
         </detector>
         <!--detector name="HpGe" type="CSBEDetector" parent="Lab"/-->
         <!--detector name="sample" type="CSSampleBox" parent="HpGe">
@@ -41,6 +47,6 @@
         <parameter name="EnableFlatSurfaceFlux" value="0"/>
         <parameter name="enable_primary_particle" value="1"/>
         <parameter name="save_null_event" value="0"/>
-        <parameter name="enable_decay_chain_splitting" value="0"/>
+        <parameter name="enable_decay_chain_splitting" value="1"/>
     </analysis>
 </BambooMC>
