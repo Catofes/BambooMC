@@ -59,7 +59,8 @@ SampleBoxDetector::SampleBoxDetector(const G4String &name)
     if (_material == ""){
         _material = "G4_AIR";
     }
-    G4cout << "SampleBoxDetector found..." << G4endl;
+
+    G4cout << "SampleBoxDetector "<<name<<" found. Material "<<_material << G4endl;
 }
 
 G4bool SampleBoxDetector::construct() {

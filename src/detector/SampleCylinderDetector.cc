@@ -41,10 +41,12 @@ SampleCylinderDetector::SampleCylinderDetector (const G4String & name)
   _shiftY = BambooUtils::evaluate(dp.getParameterAsString("shift_y"));
   _shiftZ = BambooUtils::evaluate(dp.getParameterAsString("shift_z"));
   _sensitive = dp.getParameterAsInt("sensitive") == 1? true:false;
+  _material = dp.getParameterAsString("material");
   if (_material == ""){
     _material = "G4_AIR";
   }
   G4cout << "radius: " <<  _radius/mm << "mm." << G4endl;
+  G4cout << "SampleCylinderDetector "<<name<<" found. Material "<<_material << G4endl;
 }
 
 G4bool SampleCylinderDetector::construct ()

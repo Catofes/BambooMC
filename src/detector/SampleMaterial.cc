@@ -139,6 +139,8 @@ void SampleMaterial::defineMaterials()
 
     materialVec.push_back(lowCarbonSteel);
 
+    G4Material * stainlessSteel = pNistManager->FindOrBuildMaterial("G4_STAINLESS-STEEL");
+    materialVec.push_back(stainlessSteel);
 
     double _tmaMassFraction = 0.01;
 

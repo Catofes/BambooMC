@@ -3,7 +3,7 @@
     <run number="9001"/>
     <geometry>
         <material name="SampleMaterial">
-            <parameter name="multiple" value="10"/>
+            <parameter name="multiple" value="1"/>
         </material>
         <detector name="Lab" type="CSLaboratory">
             <parameter name="half_x" value="1*m"/>
@@ -13,24 +13,25 @@
         <detector name="SteelShell" type="SampleCylinderDetector" parent="Lab">
             <parameter name="radius" value="40*cm"/>
             <parameter name="height" value="80*cm"/>
-            <parameter name="material" value="Low_Carbon_Steel"/>
+            <parameter name="material" value="G4_STAINLESS-STEEL"/>
         </detector>
         <detector name="InnerGas" type="SampleCylinderDetector" parent="SteelShell">
             <parameter name="radius" value="30*cm"/>
             <parameter name="height" value="70*cm"/>
             <parameter name="material" value="XeTMAMixture"/>
-        </detector>
-        <detector name="Sensitive" type="SampleBoxDetector" parent="InnerGas">
-            <parameter name="half_x" value="10*cm"/>
-            <parameter name="half_y" value="10*cm"/>
-            <parameter name="half_z" value="35*cm"/>
-            <parameter name="material" value="XeTMAMixture"/>
             <parameter name="sensitive" value="1"/>
         </detector>
-        <detector name="SteelContainer" type="SampleCylinderDetector" parent="Sensitive">
-            <parameter name="radius" value="1*cm"/>
-            <parameter name="height" value="2*cm"/>
-            <parameter name="material" value="Low_Carbon_Steel"/>
+        <!--<detector name="Sensitive" type="SampleBoxDetector" parent="InnerGas">-->
+            <!--<parameter name="half_x" value="10*cm"/>-->
+            <!--<parameter name="half_y" value="10*cm"/>-->
+            <!--<parameter name="half_z" value="35*cm"/>-->
+            <!--<parameter name="material" value="XeTMAMixture"/>-->
+            <!--<parameter name="sensitive" value="1"/>-->
+        <!--</detector>-->
+        <detector name="SteelContainer" type="SampleCylinderDetector" parent="InnerGas">
+            <parameter name="radius" value="2*mm"/>
+            <parameter name="height" value="4*mm"/>
+            <parameter name="material" value="G4_STAINLESS-STEEL"/>
         </detector>
         <!--detector name="HpGe" type="CSBEDetector" parent="Lab"/-->
         <!--detector name="sample" type="CSSampleBox" parent="HpGe">
