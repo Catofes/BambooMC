@@ -27,6 +27,10 @@ namespace
 SampleMaterial::SampleMaterial(const G4String &name)
         : BambooMaterial(name)
 {
+    _multiple = BambooGlobalVariables::Instance()->getMaterialParameterAsDouble("multiple");
+    if (_multiple <= 0) {
+        _multiple = 1;
+    }
     G4cout << "SampleMaterial found..." << G4endl;
 }
 
@@ -138,15 +142,15 @@ void SampleMaterial::defineMaterials()
 
     double _tmaMassFraction = 0.01;
 
-    double _multiple = 10;
-    double _enrichedXenonDensity = gasXenon->GetDensity()*_multiple;
+    //_multiple = 10;
+    double _enrichedXenonDensity = gasXenon->GetDensity() * _multiple;
 
     double xenon_unit_amount = _enrichedXenonDensity * m3 / (gasXenon->GetA() * mole);
     double tmaDensity = _enrichedXenonDensity * _tmaMassFraction;
     double tma_molecule_mass = 59.1103 * g / mole;
     double tma_unit_amount = tmaDensity * m3 / (tma_molecule_mass * mole);
-    double tmaPressure = 1 * gasXenon->GetPressure()*_multiple * tma_unit_amount / xenon_unit_amount;
-    G4cout << "Xe pressure = " << gasXenon->GetPressure()*_multiple / bar << " bar." << G4endl;
+    double tmaPressure = 1 * gasXenon->GetPressure() * _multiple * tma_unit_amount / xenon_unit_amount;
+    G4cout << "Xe pressure = " << gasXenon->GetPressure() * _multiple / bar << " bar." << G4endl;
     G4cout << "TMA pressure = " << tmaPressure / bar << " bar." << G4endl;
     G4cout << "TMA unit amount " << tma_unit_amount << " mole." << G4endl;
     G4cout << "TMA mole fraction " << tma_unit_amount / (tma_unit_amount + xenon_unit_amount) << G4endl;

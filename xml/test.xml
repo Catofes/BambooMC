@@ -2,7 +2,9 @@
 <BambooMC>
     <run number="9001"/>
     <geometry>
-        <material name="SampleMaterial"/>
+        <material name="SampleMaterial">
+            <parameter name="multiple" value="10"/>
+        </material>
         <detector name="Lab" type="CSLaboratory">
             <parameter name="half_x" value="1*m"/>
             <parameter name="half_y" value="1*m"/>
@@ -26,8 +28,8 @@
             <parameter name="sensitive" value="1"/>
         </detector>
         <detector name="SteelContainer" type="SampleCylinderDetector" parent="Sensitive">
-            <parameter name="radius" value="0.5*cm"/>
-            <parameter name="height" value="1*cm"/>
+            <parameter name="radius" value="1*cm"/>
+            <parameter name="height" value="2*cm"/>
             <parameter name="material" value="Low_Carbon_Steel"/>
         </detector>
         <!--detector name="HpGe" type="CSBEDetector" parent="Lab"/-->
