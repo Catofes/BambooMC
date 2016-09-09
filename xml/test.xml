@@ -19,27 +19,19 @@
             <parameter name="radius" value="30*cm"/>
             <parameter name="height" value="70*cm"/>
             <parameter name="material" value="XeTMAMixture"/>
+        </detector>
+        <detector name="Sensitive" type="SampleBoxDetector" parent="InnerGas">
+            <parameter name="half_x" value="10*cm"/>
+            <parameter name="half_y" value="10*cm"/>
+            <parameter name="half_z" value="40*cm"/>
+            <parameter name="material" value="XeTMAMixture"/>
             <parameter name="sensitive" value="1"/>
         </detector>
-        <!--<detector name="Sensitive" type="SampleBoxDetector" parent="InnerGas">-->
-            <!--<parameter name="half_x" value="10*cm"/>-->
-            <!--<parameter name="half_y" value="10*cm"/>-->
-            <!--<parameter name="half_z" value="35*cm"/>-->
-            <!--<parameter name="material" value="XeTMAMixture"/>-->
-            <!--<parameter name="sensitive" value="1"/>-->
-        <!--</detector>-->
-        <detector name="SteelContainer" type="SampleCylinderDetector" parent="InnerGas">
+        <detector name="SteelContainer" type="SampleCylinderDetector" parent="Sensitive">
             <parameter name="radius" value="2*mm"/>
             <parameter name="height" value="4*mm"/>
             <parameter name="material" value="G4_STAINLESS-STEEL"/>
         </detector>
-        <!--detector name="HpGe" type="CSBEDetector" parent="Lab"/-->
-        <!--detector name="sample" type="CSSampleBox" parent="HpGe">
-            <parameter name="half_y" value="50*mm"/>
-            <parameter name="half_x" value="23*mm"/>
-            <parameter name="half_z" value="11.5*mm"/>
-            <parameter name="material" value="whitecopper"/>
-        </detector-->
     </geometry>
     <physics name="SimpleUnderGroundPhysics">
         <parameter name="cutlength" value="0.02*mm"/>

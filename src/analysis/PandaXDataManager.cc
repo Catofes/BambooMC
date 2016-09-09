@@ -357,15 +357,15 @@ void PandaXDataManager::resetPartialEvent(const G4Event *aEvent)
         G4VHitsCollection *hitsCollection = hCthis->GetHC(i);
         if (hitsCollection->GetName().contains("EnergyDepositionHits")) {
             PandaXEnergyDepositionHitsCollection *hC = (PandaXEnergyDepositionHitsCollection *) hitsCollection;
-            for (int i = 0; i < hC->entries(); ++i) {
-                PandaXEnergyDepositionHit *hit = (*hC)[i];
+            for (int j = 0; j < hC->entries(); ++j) {
+                PandaXEnergyDepositionHit *hit = (*hC)[j];
                 delete hit;
             }
             hC->GetVector()->clear();
         } else if (hitsCollection->GetName().contains("FlatSurfaceFluxHits")) {
             PandaXFlatSurfaceFluxHitsCollection *hC = (PandaXFlatSurfaceFluxHitsCollection *) hitsCollection;
-            for (int i = 0; i < hC->entries(); ++i) {
-                PandaXFlatSurfaceFluxHit *hit = (*hC)[i];
+            for (int j = 0; j < hC->entries(); ++j) {
+                PandaXFlatSurfaceFluxHit *hit = (*hC)[j];
                 delete hit;
             }
             hC->GetVector()->clear();

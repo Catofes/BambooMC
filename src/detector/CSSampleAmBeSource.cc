@@ -73,5 +73,6 @@ G4bool CSSampleAmBeSource::construct()
                                                                    m_pAmBeActiveLogicalVolume, "AmBeSource",
                                                                    m_pAmBeShellLogicalVolume, false, 0);
 
+    return true;
 }
 
