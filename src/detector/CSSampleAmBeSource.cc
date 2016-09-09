@@ -41,11 +41,11 @@ CSSampleAmBeSource::CSSampleAmBeSource(const G4String &name)
 G4bool CSSampleAmBeSource::construct()
 {
     G4Material *ss = G4Material::GetMaterial("SS304LSteel");
-    G4Material *abpowder = G4Material::GetMaterial("AmBepowder");
+    //G4Material *abpowder = G4Material::GetMaterial("AmBepowder");
     G4double samplehalfz = 8.0 / 2.0 * mm;
     G4double sampleouterradius = 8.0 / 2.0 * mm;
     G4double sampleinnerradius = 4.0 / 2.0 * mm;
-    G4double shellT = 2.0 * mm;
+    //G4double shellT = 2.0 * mm;
     G4double activeZ = 4.0 * mm;
 
     G4Tubs *pShellTubs = new G4Tubs("ShellTubs", 0.0, sampleouterradius, samplehalfz, 0.0 * deg, 360.0 * deg);
@@ -61,17 +61,14 @@ G4bool CSSampleAmBeSource::construct()
     double ChamberHeight = 350.0 * mm;
     double PEHatTopSurfaceToChamberTopSurface = 119.0 * mm;
 
-    G4PVPlacement *m_pAmBeShellPhysicalVolume = new G4PVPlacement(xRot90deg,
-                                                                  G4ThreeVector(-40. * mm, 0.0,
-                                                                                ChamberHeight * 0.5 -
-                                                                                PEHatTopSurfaceToChamberTopSurface +
-                                                                                1.0 * mm + sampleouterradius),
-                                                                  m_pAmBeShellLogicalVolume, "AmBeShell",
-                                                                  _parentPart->getContainerLogicalVolume(), false, 0);
+    new G4PVPlacement(xRot90deg, G4ThreeVector(-40. * mm, 0.0,
+                                               ChamberHeight * 0.5 - PEHatTopSurfaceToChamberTopSurface + 1.0 * mm +
+                                               sampleouterradius),
+                      m_pAmBeShellLogicalVolume, "AmBeShell",
+                      _parentPart->getContainerLogicalVolume(), false, 0);
 
-    G4PVPlacement *m_pAmBeActivePhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0.0, 0.0, 0.0),
-                                                                   m_pAmBeActiveLogicalVolume, "AmBeSource",
-                                                                   m_pAmBeShellLogicalVolume, false, 0);
+    new G4PVPlacement(0, G4ThreeVector(0.0, 0.0, 0.0), m_pAmBeActiveLogicalVolume, "AmBeSource",
+                      m_pAmBeShellLogicalVolume, false, 0);
 
     return true;
 }
