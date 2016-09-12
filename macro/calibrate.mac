@@ -1,0 +1,17 @@
+/gps/pos/type Volume
+/gps/pos/shape Para
+/gps/pos/centre 0 0 782 mm
+/gps/pos/halfy 1.1 m
+/gps/pos/halfx 2 mm
+/gps/pos/halfz 2 mm
+
+# confine in the shaping rings
+/gps/pos/confine Sample
+
+/gps/ang/type iso
+/gps/particle ion
+
+#there
+/gps/ion 27 60
+
+/gps/energy 0 MeV

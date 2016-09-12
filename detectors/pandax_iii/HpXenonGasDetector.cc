@@ -24,111 +24,134 @@
 
 // anonymous namespace to register the HpXenonGasDetector
 
-namespace {
+namespace
+{
 
-  BambooDetectorPart * createHpXenonGasDetector (const G4String & name)
-  {
-    return new HpXenonGasDetector(name);
-  }
+    BambooDetectorPart *createHpXenonGasDetector(const G4String &name)
+    {
+        return new HpXenonGasDetector(name);
+    }
 
-  const std::string HpXenonGasDetectorType("HpXenonGasDetector");
+    const std::string HpXenonGasDetectorType("HpXenonGasDetector");
 
-  const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(HpXenonGasDetectorType, createHpXenonGasDetector);
+    const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(HpXenonGasDetectorType,
+                                                                                    createHpXenonGasDetector);
 }
 
-HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
-  : BambooDetectorPart(name)
+HpXenonGasDetector::HpXenonGasDetector(const G4String &name)
+        : BambooDetectorPart(name)
 {
-  //  BambooGlobalVariables *bgv = BambooGlobalVariables::Instance();
+    //  BambooGlobalVariables *bgv = BambooGlobalVariables::Instance();
 
-  DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters(_partName);
+    DetectorParameters dp = BambooGlobalVariables::Instance()
+            ->findDetectorPartParameters(_partName);
 
-  _vesselInnerRadius = BambooUtils::evaluate(dp.getParameterAsString("vessel_inner_radius"));
-  _vesselBarrelThickness = BambooUtils::evaluate(dp.getParameterAsString("vessel_barrel_thickness"));
-  _vesselEndThickness = BambooUtils::evaluate(dp.getParameterAsString("vessel_end_thickness"));
+    _vesselInnerRadius = BambooUtils::evaluate(dp.getParameterAsString("vessel_inner_radius"));
+    _vesselBarrelThickness = BambooUtils::evaluate(dp.getParameterAsString("vessel_barrel_thickness"));
+    _vesselEndThickness = BambooUtils::evaluate(dp.getParameterAsString("vessel_end_thickness"));
 
-  _vesselInnerHeight = BambooUtils::evaluate(dp.getParameterAsString("vessel_inner_height"));
+    _vesselInnerHeight = BambooUtils::evaluate(dp.getParameterAsString("vessel_inner_height"));
 
-  int is_sensitive = dp.getParameterAsInt("is_sensitive");
+    int is_sensitive = dp.getParameterAsInt("is_sensitive");
 
-  _shiftX = BambooUtils::evaluate(dp.getParameterAsString("shift_x"));
-  _shiftY = BambooUtils::evaluate(dp.getParameterAsString("shift_y"));
-  _shiftZ = BambooUtils::evaluate(dp.getParameterAsString("shift_z"));
+    _shiftX = BambooUtils::evaluate(dp.getParameterAsString("shift_x"));
+    _shiftY = BambooUtils::evaluate(dp.getParameterAsString("shift_y"));
+    _shiftZ = BambooUtils::evaluate(dp.getParameterAsString("shift_z"));
 
-  if (_vesselInnerRadius <= 0) {
-    _vesselInnerRadius = 750 * mm;
-  }
-  if (_vesselInnerHeight <= 0) {
-    _vesselInnerHeight = 2000.* mm;
-  }
-  if (_vesselBarrelThickness <=0) {
-    _vesselBarrelThickness = 10. * mm;
-  }
-  if (_vesselEndThickness <=0) {
-    _vesselEndThickness = 10. * mm;
-  }
-  if (_shiftX == 0) {
-    _shiftX = 0 * mm;
-  }
-  if (_shiftY == 0) {
-    _shiftY = 0 * mm;
-  }
-  if (_shiftZ == 0) {
-    _shiftZ = 0 * mm;
-  }
+    if (_vesselInnerRadius <= 0) {
+        _vesselInnerRadius = 750 * mm;
+    }
+    if (_vesselInnerHeight <= 0) {
+        _vesselInnerHeight = 2000. * mm;
+    }
+    if (_vesselBarrelThickness <= 0) {
+        _vesselBarrelThickness = 10. * mm;
+    }
+    if (_vesselEndThickness <= 0) {
+        _vesselEndThickness = 10. * mm;
+    }
+    if (_shiftX == 0) {
+        _shiftX = 0 * mm;
+    }
+    if (_shiftY == 0) {
+        _shiftY = 0 * mm;
+    }
+    if (_shiftZ == 0) {
+        _shiftZ = 0 * mm;
+    }
 
-  if (is_sensitive == 1) {
-    _isSensitive = true;
-  } else {
-    _isSensitive = false;
-  }
+    if (is_sensitive == 1) {
+        _isSensitive = true;
+    } else {
+        _isSensitive = false;
+    }
 
-  if (is_sensitive != 1 && is_sensitive != 0) {
-    G4cout << "is_sensitive should be set to either 0 or 1. 0 will be used as default." << G4endl;
-  }
+    if (is_sensitive != 1 && is_sensitive != 0) {
+        G4cout << "is_sensitive should be set to either 0 or 1. 0 will be used as default." << G4endl;
+    }
 
-  G4cout << "HpXenonGasDetector found..." << G4endl;
+    G4cout << "HpXenonGasDetector found..." << G4endl;
 }
 
 
 G4bool HpXenonGasDetector::construct()
 {
-  G4Material * copper = G4Material::GetMaterial("G4_Cu");
-  G4VSolid * vesselTub = new G4Tubs("CopperVesselTub", 0, _vesselInnerRadius + _vesselBarrelThickness, _vesselInnerHeight/2. + _vesselEndThickness, 0., 2.*pi);
+    G4RotationMatrix *mat = new G4RotationMatrix();
+    mat->rotateX(pi / 2);
 
-  _copperVesselLogicalVolume = new G4LogicalVolume(vesselTub, copper, "CopperVesselLog", 0, 0, 0);
+    G4Material *steel = G4Material::GetMaterial("G4_STAINLESS-STEEL");
+    G4VSolid *calibrateTub = new G4Tubs("CalibrateTub", 0, 1 * mm, _vesselInnerHeight / 2., 0., 2. * pi);
+    G4LogicalVolume *calibrateLogicalVolume = new G4LogicalVolume(calibrateTub, steel, "CopperVesselLog", 0, 0, 0);
+    new G4PVPlacement(mat, G4ThreeVector(0, 0, 782 * mm), calibrateLogicalVolume, "Sample",
+                      _parentPart->getContainerLogicalVolume(), false, 0);
+    new G4PVPlacement(mat, G4ThreeVector(0, 0, -782 * mm), calibrateLogicalVolume, "Sample",
+                      _parentPart->getContainerLogicalVolume(), false, 0);
+    new G4PVPlacement(mat, G4ThreeVector(391 * sqrt(3), 0, 391 * mm), calibrateLogicalVolume, "Sample",
+                      _parentPart->getContainerLogicalVolume(), false, 0);
+    new G4PVPlacement(mat, G4ThreeVector(-391 * sqrt(3), 0, 391 * mm), calibrateLogicalVolume, "Sample",
+                      _parentPart->getContainerLogicalVolume(), false, 0);
+    new G4PVPlacement(mat, G4ThreeVector(391 * sqrt(3), 0, -391 * mm), calibrateLogicalVolume, "Sample",
+                      _parentPart->getContainerLogicalVolume(), false, 0);
+    new G4PVPlacement(mat, G4ThreeVector(-391 * sqrt(3), 0, -391 * mm), calibrateLogicalVolume, "Sample",
+                      _parentPart->getContainerLogicalVolume(), false, 0);
 
-  G4RotationMatrix * mat = new G4RotationMatrix();
-  mat->rotateX(pi/2);
 
-  _copperVesselPhysicalVolume = new G4PVPlacement(mat, G4ThreeVector(_shiftX, _shiftY, _shiftZ), _copperVesselLogicalVolume, "CopperVessel", _parentPart->getContainerLogicalVolume(), false, 0);
+    G4Material *copper = G4Material::GetMaterial("G4_Cu");
+    G4VSolid *vesselTub = new G4Tubs("CopperVesselTub", 0, _vesselInnerRadius + _vesselBarrelThickness,
+                                     _vesselInnerHeight / 2. + _vesselEndThickness, 0., 2. * pi);
 
-  G4VisAttributes * vesselVis = new G4VisAttributes();
-  vesselVis->SetColour(224./255, 126./255, 11./255, 0.4);
-  //  vesselVis->SetVisibility(_isVisible);
-  _copperVesselLogicalVolume->SetVisAttributes(vesselVis);
+    _copperVesselLogicalVolume = new G4LogicalVolume(vesselTub, copper, "CopperVesselLog", 0, 0, 0);
 
 
-  // create the xenon detector
+    _copperVesselPhysicalVolume = new G4PVPlacement(mat, G4ThreeVector(_shiftX, _shiftY, _shiftZ),
+                                                    _copperVesselLogicalVolume, "CopperVessel",
+                                                    _parentPart->getContainerLogicalVolume(), false, 0);
 
-  G4Material *XeTMAMixture = G4Material::GetMaterial("XeTMAMixture");
-  G4VSolid *XeTub = new G4Tubs("XeTub", 0, _vesselInnerRadius, _vesselInnerHeight / 2., 0, 2 * pi);
-  _XeTubLogicalVolume = new G4LogicalVolume(XeTub, XeTMAMixture, "XeTubLog", 0, 0, 0);
+    G4VisAttributes *vesselVis = new G4VisAttributes();
+    vesselVis->SetColour(224. / 255, 126. / 255, 11. / 255, 0.4);
+    //  vesselVis->SetVisibility(_isVisible);
+    _copperVesselLogicalVolume->SetVisAttributes(vesselVis);
 
-  _XeTubPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), _XeTubLogicalVolume, "GasXenon",
-                                           _copperVesselLogicalVolume, false, 0);
 
-  _partLogicalVolume = _copperVesselLogicalVolume;
-  _partPhysicalVolume = _copperVesselPhysicalVolume;
-  _partContainerLogicalVolume = _XeTubLogicalVolume;
+    // create the xenon detector
 
-  if (_isSensitive){
-    PandaXSensitiveDetector *hpXeSD = new PandaXSensitiveDetector("HpXeSD");
-    G4SDManager *sdManager = G4SDManager::GetSDMpointer();
-    sdManager->AddNewDetector(hpXeSD);
-    _XeTubLogicalVolume->SetSensitiveDetector(hpXeSD);
-  }
+    G4Material *XeTMAMixture = G4Material::GetMaterial("XeTMAMixture");
+    G4VSolid *XeTub = new G4Tubs("XeTub", 0, _vesselInnerRadius, _vesselInnerHeight / 2., 0, 2 * pi);
+    _XeTubLogicalVolume = new G4LogicalVolume(XeTub, XeTMAMixture, "XeTubLog", 0, 0, 0);
 
-  return true;
+    _XeTubPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), _XeTubLogicalVolume, "GasXenon",
+                                             _copperVesselLogicalVolume, false, 0);
+
+    _partLogicalVolume = _copperVesselLogicalVolume;
+    _partPhysicalVolume = _copperVesselPhysicalVolume;
+    _partContainerLogicalVolume = _XeTubLogicalVolume;
+
+    if (_isSensitive) {
+        PandaXSensitiveDetector *hpXeSD = new PandaXSensitiveDetector("HpXeSD");
+        G4SDManager *sdManager = G4SDManager::GetSDMpointer();
+        sdManager->AddNewDetector(hpXeSD);
+        _XeTubLogicalVolume->SetSensitiveDetector(hpXeSD);
+    }
+
+    return true;
 }
