@@ -357,6 +357,34 @@ G4bool CSBEDetector::construct()
                       "PEHat", m_pChamberLogicalVolume, false, 0);
 
 
+    G4Material *natGe = G4Material::GetMaterial("NaturalGe");
+    G4Tubs *pHPGeVolume = new G4Tubs("HPGeVolume", 0.0 * cm, HPGeRadius, HPGeHeight / 2.0, 0.0 * deg, 360.0 * deg);
+    G4LogicalVolume *m_pHPGeLogicalVolume = new G4LogicalVolume(pHPGeVolume, natGe, "HPGeLogicalVolume", 0, 0, 0);
+    new G4PVPlacement(0, G4ThreeVector(0., 0., 77.0 * mm), m_pHPGeLogicalVolume, "HPGe",
+                      m_pCryostatInnerLogicalVolume, false, 0);
+
+    G4Tubs *pHPGeSensitiveVolume1 = new G4Tubs("HPGeSensitiveVolume1", 0.0 * cm,
+                                               HPGeRadius - HPGeOuterElectrodeThickness,
+                                               HPGeHeight / 2.0 - HPGeEnteranceWindowThickness / 2.0 -
+                                               HPGeOuterElectrodeThickness / 2.0, 0.0 * deg, 360.0 * deg);
+    G4Tubs *pBottomCentreUnsensitiveVolume = new G4Tubs("BottomCentreUnsensitiveVolume", 0.0 * mm, HPGePPlusRadius,
+                                                        HPGePPlusDepth, 0.0 * deg, 360.0 * deg);
+    G4SubtractionSolid *pHPGeSensitiveVolume = new G4SubtractionSolid("HPGeSensitiveVolume", pHPGeSensitiveVolume1,
+                                                                      pBottomCentreUnsensitiveVolume, 0,
+                                                                      G4ThreeVector(0, 0, -15.2998 * mm));
+    G4LogicalVolume *m_pHPGeSensitiveLogicalVolume = new G4LogicalVolume(pHPGeSensitiveVolume, natGe,
+                                                                         "HPGeSensitiveLogicalVolume", 0, 0, 0);
+    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.2998 * mm), m_pHPGeSensitiveLogicalVolume, "HPGeSensitive",
+                      m_pHPGeLogicalVolume, false, 0);
+
+    //------------------------------ HPGe sensitivity ------------------------------
+    G4String SDName = _partName;
+    SDName.append(G4String("SDName"));
+    PandaXSensitiveDetector *xeSD = new PandaXSensitiveDetector(SDName);
+    G4SDManager *sdManager = G4SDManager::GetSDMpointer();
+    sdManager->AddNewDetector(xeSD);
+    m_pHPGeSensitiveLogicalVolume->SetSensitiveDetector(xeSD);
+
 //--- attributes ---
     G4Colour hPEShieldColor(1., 1., 1., 1.);
     G4Colour hLeadShieldColor(0.500, 0.500, 0.500, 1.0);
@@ -428,6 +456,14 @@ G4bool CSBEDetector::construct()
     pCryostatTubsVisAtt->SetVisibility(true);
     pCryostatTubsVisAtt->SetForceSolid(true);
     m_pCryostatTubsLogicalVolume->SetVisAttributes(pCryostatTubsVisAtt);
+
+
+    G4VisAttributes *pHPGeVisAtt = new G4VisAttributes(G4Color(0.0, 1.0, 0.0, 1.0));
+    pHPGeVisAtt->SetVisibility(true);
+    pHPGeVisAtt->SetForceSolid(true);
+    m_pHPGeLogicalVolume->SetVisAttributes(pHPGeVisAtt);
+    m_pHPGeSensitiveLogicalVolume->SetVisAttributes(pHPGeVisAtt);
+
 
     G4cout << " Counting Station BE Detector Constructed." << G4endl;
     return true;
