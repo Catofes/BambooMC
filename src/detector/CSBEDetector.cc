@@ -176,7 +176,7 @@ G4bool CSBEDetector::construct()
     G4Material *Aluminium = G4Material::GetMaterial("G4_Al");
     G4Material *Polyethylene = G4Material::GetMaterial("Polyethylene");
     G4Material *Vacuum = G4Material::GetMaterial("Vacuum");
-    G4Material *ChamberVacuum = G4Material::GetMaterial("ChamberVacuum");
+    G4Material *ChamberGas = G4Material::GetMaterial("G4_AIR");
     G4Material *Epoxy = G4Material::GetMaterial("Epoxy");
 
 //--- polyethylene shield shell ---
@@ -234,7 +234,7 @@ G4bool CSBEDetector::construct()
 //--- chamber ---
 
     G4Box *pChamberBox = new G4Box("ChamberBox", ChamberHalfX, ChamberHalfY, ChamberHalfZ);
-    G4LogicalVolume *m_pChamberLogicalVolume = new G4LogicalVolume(pChamberBox, ChamberVacuum,
+    G4LogicalVolume *m_pChamberLogicalVolume = new G4LogicalVolume(pChamberBox, ChamberGas,
                                                                    "ChamberLogicalVolume", 0, 0, 0);
     _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
                                             m_pChamberLogicalVolume, "Chamber", m_pCopperShieldLogicalVolume,
